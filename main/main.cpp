@@ -31,12 +31,12 @@ char statusMessage[128];
 struct tm timeinfo;
 char use_ani = true;
 bool clockStartingUp = true;
+RTC_NOINIT_ATTR int safety_restart = 0;
 //------------------Animated icons------------------
 uint8_t frame = 0;
 unsigned long lastIconUpdate = 0;
 unsigned long housekeeper_10 = 0;
 unsigned long housekeeper_1 = 0;
-//uint8_t NightMode = 0;
 bool isAdviceScrolling = false;
 //---------------------MQTT-------------------------
 IPAddress MQTT_HOST(192,168,1,000); //Use your own!
@@ -178,7 +178,12 @@ extern "C" void app_main()
   matrix.addLayer(&backgroundLayer); 
   matrix.addLayer(&scrollingLayer); 
   matrix.begin();
-  matrix.setBrightness(defaultBrightness);
+
+  if (safety_restart == 1){
+   matrix.setBrightness(25);
+   safety_restart = 0; 
+  } else {
+  matrix.setBrightness(defaultBrightness);}
 
   scrollingLayer.setOffsetFromTop(STATUS_Y);
   scrollingLayer.setMode(wrapForward); // Continues in one direction
@@ -369,9 +374,10 @@ void scrollAdvice(){
 
 void safetyrestart(){
     // If time is 04:00:00
-if (timeinfo.tm_hour == 4 && timeinfo.tm_min == 0 && timeinfo.tm_sec <= 5) {
+if (timeinfo.tm_hour == 4 && timeinfo.tm_min == 1 && timeinfo.tm_sec <= 11) {
+    safety_restart = 1;
     logStatusMessage("SafetyRestart");
-    vTaskDelay(pdMS_TO_TICKS(3000)); 
+    vTaskDelay(pdMS_TO_TICKS(4000)); 
     esp_restart();
 }
 
@@ -399,12 +405,12 @@ void nightmode() {
 
     if (timeinfo.tm_hour < 1) {
         targetBrightness = 37;
-    } else if (timeinfo.tm_hour < 2) {
+    } else if (timeinfo.tm_hour < 20) {
         targetBrightness = 25;
-    } else if (timeinfo.tm_hour >= 6) {
+    } else if (timeinfo.tm_hour >= 20) {
         targetBrightness = 255;
     } else {
-        // Handle the gap between 02:00 and 06:00 (optional but safe)
+        // (optional but safe)
         return; 
     }
 

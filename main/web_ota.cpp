@@ -213,11 +213,11 @@ void setupOTA(AsyncWebServer &server)
             {
               scrollingLayer.stop();
               logStatusMessage("Updating...");
-              if(animationTaskHandle) vTaskSuspend(animationTaskHandle); //Stop animation task & other
+              vTaskDelay(pdMS_TO_TICKS(500));
               if(adviceTaskHandle) vTaskSuspend(adviceTaskHandle);        
-              if(weatherTaskHandle) vTaskSuspend(weatherTaskHandle); 
+              if(weatherTaskHandle) vTaskSuspend(weatherTaskHandle);
+              if(animationTaskHandle) vTaskSuspend(animationTaskHandle); //Stop animation task & other 
 
-                vTaskDelay(pdMS_TO_TICKS(500));
                 Serial.printf("Update Start: %s\n", filename.c_str());
                 
 

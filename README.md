@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This is just another vertion of Morfing clock as initially written ny bogd (https://github.com/bogd/esp32-morphing-clock).
 Uses SmartMatrix flicker-free Led matrix library
 IDF code version
@@ -47,3 +48,7 @@ Mqtt support, if used enable via config.h and enter you credentials in main.cpp.
 
 Credits:
 To all contributors of original code as this is just modification and own implementation of original code.
+=======
+# MorfingClockIDF
+Morfing clock IDF code vertion using flicker free SmartMatrix LED matrix display library
+>>>>>>> 1eb4633dd4d5153f5e9301103c6a3115e5800e5a
